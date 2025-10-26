@@ -9,10 +9,10 @@ pygame.display.set_caption("Move the player")
 clock = pygame.time.Clock()
 FPS = 60
 
-player_size = 30
-player_color = (0, 100, 255)
-player_x = WIDTH // 2
-player_y = HEIGHT // 2
+player_image = pygame.image.load('player.png')
+player_image = pygame.transform.scale(player_image, (40, 32))
+player_rect = player_image.get_rect()
+player_rect.center = (WIDTH // 2, HEIGHT // 2)
 player_speed = 5
 
 running = True
@@ -25,20 +25,19 @@ while running:
     
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
-        player_x -= player_speed
+        player_rect.x -= player_speed
     if keys[pygame.K_RIGHT]:
-        player_x += player_speed
+        player_rect.x += player_speed
     if keys[pygame.K_UP]:
-        player_y -= player_speed
+        player_rect.y -= player_speed
     if keys[pygame.K_DOWN]:
-        player_y += player_speed
+        player_rect.y += player_speed
 
-    player_x = max(0, min(WIDTH - player_size, player_x))
-    player_y = max(0, min(HEIGHT - player_size, player_y))
+    player_rect.x = max(0, min(WIDTH - player_rect.width, player_rect.x))
+    player_rect.y = max(0, min(HEIGHT - player_rect.height, player_rect.y))
 
     screen.fill((255,200,200))
-    pygame.draw.rect(screen, player_color, (player_x, player_y, player_size, player_size))
-
+    screen.blit(player_image, player_rect)
     pygame.display.flip()
 
 pygame.quit()
