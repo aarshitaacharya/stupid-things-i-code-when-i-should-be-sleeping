@@ -7,6 +7,8 @@ app = QApplication([])
 chat_window = MoodPetChat()
 chat_window.hide()
 
+screen = app.primaryScreen().geometry()
+
 def on_cat_click():
     if chat_window.isVisible():
         chat_window.hide()
@@ -14,7 +16,7 @@ def on_cat_click():
         chat_window.show()
         chat_window.raise_()
 
-cat = FloatingCat(on_click_callback=on_cat_click)
+cat = FloatingCat(on_click_callback=on_cat_click, parent_geometry=screen)
 cat.show()
 
 app.exec()
