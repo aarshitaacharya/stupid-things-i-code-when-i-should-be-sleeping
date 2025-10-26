@@ -20,12 +20,14 @@ collect_image = pygame.image.load('pizza.png')
 collect_image = pygame.transform.scale(collect_image, (30, 30))
 falling_pizza = []
 
-for _ in range(3):
+for _ in range(5):
     x = random.randint(0, WIDTH - 30)
     y = random.randint(-300, -50)
     falling_pizza.append(pygame.Rect(x, y, 30, 30))
 
 score = 0
+misses = 0
+max_misses = 3
 font = pygame.font.SysFont(None, 30)
 
 running = True
@@ -48,6 +50,7 @@ while running:
     for pizza in falling_pizza:
         pizza.y += 2
         if pizza.y > HEIGHT:
+            misses += 1
             pizza.y = random.randint(-300, -50)
             pizza.x = random.randint(0, WIDTH - pizza.width)
 
@@ -56,13 +59,24 @@ while running:
             pizza.y = random.randint(-300, -50)
             pizza.x = random.randint(0, WIDTH - pizza.width)
 
+    if misses > max_misses:
+        running = False
+    
     screen.fill((255,200,200))
     screen.blit(player_image, player_rect)
     for pizza in falling_pizza:
         screen.blit(collect_image, pizza)
 
     score_text = font.render(f"Score: {score}", True, (0,0,0))
+    misses_text = font.render(f"Missed: {misses}/{max_misses}", True, (255,0,0))
     screen.blit(score_text, (10, 10))
+    screen.blit(misses_text, (10, 40))
     pygame.display.flip()
 
+
+screen.fill((200, 250, 255))
+game_over_text = font.render(f"Game Over! Final Score: {score}", True, (0,0,0))
+screen.blit(game_over_text, (50, HEIGHT // 2- 20))
+pygame.display.flip()
+pygame.time.delay(3000)
 pygame.quit()
