@@ -93,6 +93,11 @@ class MoodPetChat(QWidget):
         self.user_input.clear()
         self.scroll_area.verticalScrollBar().setValue(self.scroll_area.verticalScrollBar().maximum())
 
+    def closeEvent(self, event):
+        self.hide()
+        if hasattr(self, 'cat_reference'):
+            self.cat_reference.show()
+        event.ignore()
 if __name__ == "__main__":
     app = QApplication([])
     w = MoodPetChat()

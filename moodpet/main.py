@@ -16,7 +16,8 @@ def on_cat_click():
         chat_window.show()
         chat_window.raise_()
 
-cat = FloatingCat(on_click_callback=on_cat_click, parent_geometry=screen)
+cat = FloatingCat(on_click_callback=lambda: chat_window.show())
+chat_window.cat_reference = cat
 cat.show()
 
 app.exec()
