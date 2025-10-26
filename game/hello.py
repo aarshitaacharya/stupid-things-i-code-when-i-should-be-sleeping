@@ -3,9 +3,9 @@ import random
 
 pygame.init()
 
-WIDTH, HEIGHT = 800 ,600
+WIDTH, HEIGHT = 600 ,600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Move the player")
+pygame.display.set_caption("Catch the Pizza")
 
 clock = pygame.time.Clock()
 FPS = 60
@@ -13,14 +13,17 @@ FPS = 60
 player_image = pygame.image.load('player1.png')
 player_image = pygame.transform.scale(player_image, (50, 50))
 player_rect = player_image.get_rect()
-player_rect.center = (WIDTH // 2, HEIGHT // 2)
-player_speed = 5
+player_rect.midbottom = (WIDTH // 2, HEIGHT - 10)
+player_speed = 7
 
 collect_image = pygame.image.load('pizza.png')
 collect_image = pygame.transform.scale(collect_image, (30, 30))
-collect_rect = collect_image.get_rect()
-collect_rect.x = random.randint(0, WIDTH - collect_rect.width)
-collect_rect.y = random.randint(0, HEIGHT - collect_rect.height)
+falling_pizza = []
+
+for _ in range(3):
+    x = random.randint(0, WIDTH - 30)
+    y = random.randint(-300, -50)
+    falling_pizza.append(pygame.Rect(x, y, 30, 30))
 
 score = 0
 font = pygame.font.SysFont(None, 30)
@@ -38,22 +41,25 @@ while running:
         player_rect.x -= player_speed
     if keys[pygame.K_RIGHT]:
         player_rect.x += player_speed
-    if keys[pygame.K_UP]:
-        player_rect.y -= player_speed
-    if keys[pygame.K_DOWN]:
-        player_rect.y += player_speed
+
 
     player_rect.x = max(0, min(WIDTH - player_rect.width, player_rect.x))
-    player_rect.y = max(0, min(HEIGHT - player_rect.height, player_rect.y))
 
-    if player_rect.colliderect(collect_rect):
-        score += 1
-        collect_rect.x = random.randint(0, WIDTH - collect_rect.width)
-        collect_rect.y = random.randint(0, HEIGHT - collect_rect.height)
+    for pizza in falling_pizza:
+        pizza.y += 2
+        if pizza.y > HEIGHT:
+            pizza.y = random.randint(-300, -50)
+            pizza.x = random.randint(0, WIDTH - pizza.width)
+
+        if player_rect.colliderect(pizza):
+            score += 1
+            pizza.y = random.randint(-300, -50)
+            pizza.x = random.randint(0, WIDTH - pizza.width)
 
     screen.fill((255,200,200))
     screen.blit(player_image, player_rect)
-    screen.blit(collect_image, collect_rect)
+    for pizza in falling_pizza:
+        screen.blit(collect_image, pizza)
 
     score_text = font.render(f"Score: {score}", True, (0,0,0))
     screen.blit(score_text, (10, 10))
